@@ -1,0 +1,29 @@
+create database SmartproOBS
+
+Use SmartproOBS
+
+create table Ogrenci(OgrID int primary key identity (1,1),
+AdSoyad varchar(max),Cinsiyet nchar(1),Bolum varchar(max),
+[Not] int)
+--Oluşturulan tabloya veri ekledik
+insert into Ogrenci values('Doruk Kaşoğlu','e','Bilgisayar Mühendisliği',70)
+insert into Ogrenci values('Nihan Kaşoğlu','k','Harita Mühendisliği',50)
+insert into Ogrenci values('Ramon Nelson','e','Elektrik Mühendisliği',30)
+insert into Ogrenci values('Gary Moore','e','Matematik Mühendisliği',80)
+insert into Ogrenci values('Nancy Melon','k','Endüstri Mühendisliği',60)
+
+--Alter komutu ile varolan tabloya bir sütun ekledik
+alter table Ogrenci add Durum nvarchar(max)
+--Alan tipini değiştir
+alter table Ogrenci alter column Durum nvarchar(max)
+
+update Ogrenci set Durum=
+case
+when [Not]>50 then 'Geçti' else 'Kaldı'
+end
+
+select * from Ogrenci
+
+
+use master
+drop database SmartproOBS

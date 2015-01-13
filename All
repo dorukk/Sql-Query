@@ -1,0 +1,159 @@
+----Değişken Tanımlama
+--declare @ad nvarchar(max),@yas int
+--set @ad='doruk'
+--select @ad as 'isim'
+
+----İlgili database e yönlenmek amacıyla kullanılır
+--use master
+
+----Print komutunun işlevi
+--declare @ad nvarchar(max),@yas int
+--set @ad='doruk'
+--print @ad 
+
+select * from Musteriler where MusteriAdi='Thomas Hardy'
+--Like komutunun görevleri
+--T harfi ile başlayan müşterilerimin listesi
+select * from  Musteriler where MusteriAdi like 'T%'
+--5 harfli şehirler
+select * from Musteriler where Sehir like '_____'
+select * from Musteriler where MusteriUnvani like '%sales%'
+
+select GETDATE()
+--Belli bir gün değerine gün ay yıl hafta saat dakika gibi değerleri eklemek için 
+--kullanılan fonksiyon
+select DATEADD(WEEK,2,GETDATE())
+
+--Datediff 2 tarih değeri arasındaki fark
+
+select DATEDIFF(MINUTE,'1992-11-29',GETDATE())
+
+--Datepart fonksiyonu belirli bir tarih değerini döndürür(gün,ay,yıl)
+
+select DATEPART(MONTH,GETDATE())
+
+--Karakter Fonksiyonları:char(65) a harfini verir
+--ascıı(A) 65 rakamını verir
+
+select CHAR(145)
+select ASCII('d')
+
+--CharIndex komutu işlevi
+declare @metin nvarchar(max) 
+set @metin='Bugün hava yağmurlu'
+select CHARINDEX('hava',@metin)
+select CHARINDEX('hava',@metin,8) --8.indisinden başlayarak arama yapar
+--bulunamazsa 0 değeri döndürür
+
+
+--Left komutunun işlevi
+declare @metin nvarchar(max)
+set @metin='Bugün hava yağmurlu'
+select LEFT (@metin,5)
+
+--Len komutunun işlevi
+declare @metin nvarchar(max)
+set @metin='Bugün hava yağmurlu'
+select len (@metin)
+
+--Lower komutunun işlevi
+declare @metin nvarchar(max)
+set @metin='Bugün hava yağmurlu'
+select lower (@metin)
+
+--LTRIM komutunun işlevi
+declare @metin nvarchar(max)
+set @metin='     merhaba    '
+select rtrim(LTRIM(@metin))
+
+--Reverse komutunun kullanımı
+select lower(reverse(MusteriAdi)) from Musteriler
+
+--Substring Fonk kullanımı
+declare @metin nvarchar(max)
+set @metin='Bugün hava yağmurlu'
+select SUBSTRING(@metin,CHARINDEX ('ğ',@metin),4)
+
+--If-Else kullanımı
+declare @sayi int 
+set @sayi=45
+if(@sayi >40)
+	begin 
+		print'Büyüktür'
+	end
+else
+	begin
+		print'Küçüktür' 
+	end
+
+declare @değer int
+	select @değer=Miktar from [Satis Detaylari] 
+if(@değer>10)
+	begin
+	print'iyi'
+	end
+	else 
+	begin 
+	print'kötü'
+	end
+
+
+select * ,
+case
+	when Miktar>50 then 'iyi' 
+	when Miktar>20 then 'ehh'
+	else 'kötü'
+end as Durum
+from [Satis Detaylari]
+
+
+
+
+--Döngüler
+declare @sayac int 
+set @sayac=1;
+while (@sayac<20)
+	begin
+	if(@sayac%2=0)
+		print @sayac
+		set @sayac+=1
+	end
+	
+declare @cift int
+set @cift=0;
+while(@cift<20)
+begin
+print @cift
+set @cift+=2
+end 
+
+--1-100 arası 5e bölünen sayiların toplamını bulan
+declare @sayac int
+declare @toplam int
+set @sayac=1
+set @toplam=0
+
+while(@sayac<100)
+begin
+if(@sayac%5=0)
+set @toplam+=@sayac
+set @sayac+=1
+end
+print @toplam 
+
+
+--Break-Continue Komutunun kullanımı
+declare @sayac int
+set @sayac=1
+while(1<2)
+	begin
+	 set @sayac+=1;
+	 if(@sayac%5=0)
+	    continue
+	 print @sayac
+	
+	end
+	
+	
+	
+	

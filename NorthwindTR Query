@@ -1,0 +1,74 @@
+select * from Kategoriler
+insert into Kategoriler values ('Şarküteri','Peynir,Zeytin gibi ürün',NULL)
+insert into Kategoriler (KategoriAdi)values ('Manav')
+
+delete from Kategoriler where KategoriID=9
+delete from Kategoriler where KategoriID in (9,10)
+
+update Kategoriler set Tanimi='Peynir zeytin gibi ürünler' where KategoriID=10
+
+--Satış Detayları tablosuna fiziksel olarak bir kolon ekleyip
+select * from [Satis Detaylari]
+
+alter table [Satis Detaylari] add Ciro money
+update [Satis Detaylari] set Ciro=(BirimFiyati*Miktar)-(BirimFiyati*Miktar*İndirim)
+
+--Listeleme Deyimleri
+
+select SirketAdi,MusteriAdi,MusteriUnvani from Musteriler
+select SirketAdi+'-'+MusteriAdi as 'Müşteriler' from Musteriler
+select * from Musteriler where MusteriUnvani like '%sales%' or Ulke ='Brazil'
+select* from Musteriler where Faks is not null 
+select SirketAdi,MusteriAdi,MusteriUnvani,ISNULL(Bolge,'Bolge Yok')  from Musteriler 
+
+select UrunAdi,KategoriAdi from Kategoriler k 
+inner join Urunler u on k.KategoriID=u.KategoriID
+where k.KategoriID=1
+
+select KategoriAdi,COUNT(u.UrunID) as 'Urun Sayısı' from Kategoriler k
+left join Urunler u on k.KategoriID=u.KategoriID
+group by KategoriAdi
+
+--Her bir kategorideki satılan ürün sayısını gösteren sorgu
+select k.KategoriAdi,count(sd.SatisID) as 'Satılan Ürün' from Kategoriler k
+left join Urunler u on k.KategoriID=u.KategoriID
+left join [Satis Detaylari] sd on u.UrunID=sd.UrunID
+group by KategoriAdi
+
+
+--En fazla satış yapan 3 personel gösteren sorgu
+select top 3 p.Adi,SUM(sd.Ciro)as ToplamSatis from Personeller p
+left join Satislar s on p.PersonelID=s.PersonelID
+left join [Satis Detaylari]sd on sd.SatisID=s.SatisID 
+GROUP BY p.Adi order by ToplamSatis desc
+
+--Her bir kategori içerisindeki ürünleri getiren tedarikçilerin listesini veren sorgu
+select distinct k.KategoriAdi,t.SirketAdi from Kategoriler k
+left join Urunler u on k.KategoriID=u.KategoriID
+left join Tedarikciler t on u.TedarikciID=t.TedarikciID
+
+
+select UrunAdi,MAX(Ciro) as Ciro from Urunler u
+inner join [Satis Detaylari] sd on sd.UrunID=u.UrunID
+ where u.UrunID=
+(select top 1 UrunID from [Satis Detaylari] order by Ciro desc)
+group by  UrunAdi
+union all
+select UrunAdi,Min(Ciro) as Ciro from Urunler u
+inner join [Satis Detaylari] sd on sd.UrunID=u.UrunID
+ where u.UrunID=
+(select top 1 UrunID from [Satis Detaylari] order by Ciro asc)
+group by  UrunAdi
+
+
+--Bu ay doğmuş olan personellerin listesi
+
+select * from Personeller where
+DATEPART(MONTH,DogumTarihi)=DATEPART(MONTH,GETDATE())
+
+--Zamanında yerine ulaşmayan ürünlerin listesi
+select s.SatisID,u.UrunAdi,datediff(DAY,SatisTarihi,SevkTarihi) as GecikmeGünü from Satislar s
+inner join [Satis Detaylari] sd on sd.SatisID=s.SatisID
+inner join Urunler u on u.UrunID=sd.UrunID
+where DATEDIFF(DAY,SatisTarihi,SevkTarihi)>5
+order by GecikmeGünü desc,SatisID 
